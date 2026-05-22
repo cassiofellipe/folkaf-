@@ -38,13 +38,13 @@
       background: rgba(255, 249, 241, .7); backdrop-filter: blur(18px);
     }
     .logoBox {
-      border: 1px dashed rgba(111,61,32,.35); border-radius: 22px; min-height: 148px;
-      display: grid; place-items: center; text-align: center; padding: 16px; background: rgba(255,255,255,.6);
+      border: none; border-radius: 22px; min-height: 148px;
+      display: grid; place-items: center; text-align: center; padding: 16px; background: transparent;
       margin-bottom: 14px; overflow: hidden;
     }
-    .logoBox img { max-width: 100%; max-height: 108px; object-fit: contain; display:none; }
-    .logoBox .placeholder { color: var(--muted); font-size: 13px; line-height: 1.35; }
-    .logoActions { display: flex; gap: 8px; margin-bottom: 20px; }
+    .fixedLogo {
+      max-width: 100%; max-height: 120px; object-fit: contain; display: block;
+    }
     input[type="file"] { display: none; }
     .smallBtn, .nav button, .exportBtn {
       border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 10px 12px;
@@ -176,14 +176,8 @@
 <body>
 <div class="app">
   <aside>
-    <div class="logoBox">
-      <img id="companyLogo" alt="Logo da empresa">
-      <div id="logoPlaceholder" class="placeholder">ESPAÇO PARA LOGO<br>clique em “Inserir logo”</div>
-    </div>
-    <div class="logoActions">
-      <input id="logoInput" type="file" accept="image/*">
-      <label class="smallBtn" for="logoInput">Inserir logo</label>
-      <button class="smallBtn" onclick="clearLogo()">Remover</button>
+    <div class="logoBox fixedLogoBox">
+      <img src="assets/logo.png" alt="Logo Folkafé" class="fixedLogo">
     </div>
     <h2 class="brandTitle">Folkafé Dashboard</h2>
     <div class="subtitle">Cafés que tem rosto</div>
@@ -1250,8 +1244,6 @@ function init() {
   fillSheetConfig();
   attachDashboardListeners();
   refreshDashboard();
-  const savedLogo = localStorage.getItem('folkafeLogo');
-  if (savedLogo) setLogo(savedLogo);
 
   // Carrega automaticamente os dados mais recentes ao abrir o dashboard.
   // Assim, basta atualizar a planilha; ao abrir o link publicado, o painel já busca os dados atuais.
@@ -1264,23 +1256,6 @@ function init() {
   const fullUrlInput = document.getElementById('sheetFullUrl');
   if (fullUrlInput) fullUrlInput.addEventListener('input', updateSheetPreview);
 }
-function setLogo(src) {
-  document.getElementById('companyLogo').src = src;
-  document.getElementById('companyLogo').style.display = 'block';
-  document.getElementById('logoPlaceholder').style.display = 'none';
-}
-function clearLogo() {
-  localStorage.removeItem('folkafeLogo');
-  document.getElementById('companyLogo').removeAttribute('src');
-  document.getElementById('companyLogo').style.display = 'none';
-  document.getElementById('logoPlaceholder').style.display = 'block';
-}
-document.getElementById('logoInput').addEventListener('change', e => {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => { localStorage.setItem('folkafeLogo', ev.target.result); setLogo(ev.target.result); };
-  reader.readAsDataURL(file);
-});
 init();
 </script>
 </body>
